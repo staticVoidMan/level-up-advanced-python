@@ -24,14 +24,17 @@ def get_average():
        s corresponds to a seconds digit
        M corresponds to a milliseconds digit (no rounding, just the single digit)"""
     racetimes = get_rhines_times()
-    seconds = 0.0
-    for r in racetimes:
-        r = r.split(":")
-        seconds += int(r[0]) * 60
-        seconds += float(r[1])
-    
-    seconds /= len(racetimes)
-    minutes = seconds // 60
-    seconds = seconds % 60
+    total = datetime.timedelta()
 
-    return f"{minutes:.0f}:{seconds:.1f}"
+    for r in racetimes:
+        try:
+            mins, secs, msecs = re.split(r"[:.]", r)
+            total += datetime.timedelta(minutes = int(mins), 
+                                        seconds = int(secs), 
+                                        milliseconds = int(msecs))
+        except ValueError:
+            mins, secs = re.split(r"[:]", r)
+            total += datetime.timedelta(minutes = int(mins), 
+                                        seconds = int(secs))
+    
+    return f"{total / len(racetimes)}"[2:-5]
