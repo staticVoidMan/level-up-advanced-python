@@ -12,8 +12,10 @@ def get_data():
 
 def get_rhines_times():
     """Return a list of Jennifer Rhines' race times"""
-    races = get_data()
-    pass
+    races = get_data().split("\n")
+    search_str = "Jennifer Rhines"
+    filtered_races = [r.split()[0] for r in races if search_str in r]
+    return filtered_races
 
 def get_average():
     """Return Jennifer Rhines' average race time in the format:
@@ -22,4 +24,14 @@ def get_average():
        s corresponds to a seconds digit
        M corresponds to a milliseconds digit (no rounding, just the single digit)"""
     racetimes = get_rhines_times()
-    pass
+    seconds = 0.0
+    for r in racetimes:
+        r = r.split(":")
+        seconds += int(r[0]) * 60
+        seconds += float(r[1])
+    
+    seconds /= len(racetimes)
+    minutes = seconds // 60
+    seconds = seconds % 60
+
+    return f"{minutes:.0f}:{seconds:.1f}"
